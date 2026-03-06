@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dove siamo · Sagra dello Strozzaprete</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <style>
+        /* VARIABILI COLORE */
+        :root {
+            --rosso-sagra: #db270f;
+            --arancio-sagra: #e2750f;
+            --giallo-sagra: #ffd700;
+            --crema-sfondo: #f7efe2;
+            --marrone-scuro: #2c1e12;
+            --marrone-chiaro: #6b4f3a;
+            --oro-gradient: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            --ombra-testo: 2px 2px 4px rgba(0,0,0,0.3);
+            --ombra-carta: 0 10px 30px rgba(219, 39, 15, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--crema-sfondo);
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            color: var(--marrone-scuro);
+            overflow-x: hidden;
+        }
+
+        /* TOP BAR */
+        .top-bar {
+            background-color: var(--rosso-sagra);
+            color: white;
+            border-bottom: 3px solid #e5b887;
+            font-weight: 600;
+        }
+
+        .top-bar-right a {
+            color: #ffeacc;
+            text-decoration: none;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .top-bar-right a:hover {
+            background-color: var(--arancio-sagra);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .cart-badge {
+            background-color: var(--giallo-sagra);
+            color: var(--marrone-scuro);
+            border-radius: 50%;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: bold;
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            border: 2px solid white;
+        }
+
+        /* HERO */
+        .hero-moderno {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 8px solid var(--arancio-sagra);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            isolation: isolate;
+        }
+
+        .hero-background {
+            position: absolute;
+            inset: 0;
+            background-image: url('mappa-Umbria.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(4px);
+            transform: scale(1.1);
+            transition: transform 0.1s ease-out;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                45deg,
+                rgba(219, 39, 15, 0.7) 0%,
+                rgba(226, 117, 15, 0.5) 50%,
+                rgba(0, 0, 0, 0.4) 100%
+            );
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            animation: fadeInScale 1.2s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .hero-title-moderno {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 4rem;
+            font-weight: 400;
+            text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        /* NAV BAR */
+        .nav-bar-moderna {
+            background-color: var(--rosso-sagra);
+            padding: 0.8rem 1rem;
+            border-bottom: 4px solid #f3c38d;
+            box-shadow: 0 5px 0 #4e2f1d;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .nav-bar-moderna .nav-link {
+            color: #fef7d6;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .nav-bar-moderna .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--giallo-sagra);
+            transition: width 0.3s ease;
+        }
+
+        .nav-bar-moderna .nav-link:hover::before,
+        .nav-bar-moderna .nav-link.active::before {
+            width: 80%;
+        }
+
+        .nav-bar-moderna .nav-link:hover,
+        .nav-bar-moderna .nav-link.active {
+            background-color: var(--arancio-sagra);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* MAPPA */
+        .map-container-moderno {
+            background: white;
+            border-radius: 40px;
+            border: 4px solid var(--rosso-sagra);
+            padding: 1.5rem;
+            box-shadow: var(--ombra-carta);
+        }
+
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 25px;
+            border: 3px solid var(--arancio-sagra);
+            z-index: 1;
+        }
+
+        .info-card-moderna {
+            background: white;
+            border-radius: 30px;
+            border: 3px solid var(--arancio-sagra);
+            padding: 1.5rem;
+            height: 100%;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .info-title-moderna {
+            font-family: 'Playfair Display', serif;
+            color: var(--rosso-sagra);
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--arancio-sagra);
+            padding-bottom: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item-moderna {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.2rem;
+            padding: 0.8rem;
+            background: #fcf3e8;
+            border-radius: 20px;
+            border-left: 5px solid var(--arancio-sagra);
+            transition: all 0.3s ease;
+        }
+
+        .info-item-moderna:hover {
+            transform: translateX(5px);
+            border-left-width: 8px;
+        }
+
+        .info-icon-moderna {
+            font-size: 2rem;
+            color: var(--rosso-sagra);
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .btn-directions-moderno {
+            background: var(--rosso-sagra);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-directions-moderno:hover {
+            background: var(--arancio-sagra);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(219,39,15,0.3);
+            color: white;
+        }
+
+        .navetta-badge-moderna {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 1.2rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            border-left: 5px solid var(--giallo-sagra);
+            font-weight: 600;
+        }
+
+        /* FOOTER */
+        .footer-moderno {
+            background: linear-gradient(135deg, var(--marrone-scuro), #4a2e1b);
+            color: #ffe5ce;
+            text-align: center;
+            padding: 2.5rem;
+            border-top: 6px solid var(--arancio-sagra);
+            margin-top: 3rem;
+        }
+
+        .footer-moderno p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-moderno i {
+            color: var(--giallo-sagra);
+            margin-right: 0.3rem;
+        }
+
+        /* ANIMAZIONI */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-title-moderno {
+                font-size: 2.8rem;
+            }
+            
+            .info-card-moderna {
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar py-2">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6">
+                    <!-- Vuoto -->
+                </div>
+                <div class="col-12 col-md-6 d-flex gap-4 justify-content-center justify-content-md-end mt-2 mt-md-0 top-bar-right">
+                    <a href="AccessoAdmin.html"><i class="bi bi-person-circle"></i> <span class="d-none d-sm-inline">Accedi</span></a>
+                    <a href="carrello.html" id="cart-link">
+                        <i class="bi bi-cart-fill"></i> <span class="d-none d-sm-inline">Carrello</span>
+                        <span class="cart-badge" id="cart-badge">0</span>
+                    </a>
+                    <a href="dovesiamo.html"><i class="bi bi-geo-alt-fill"></i> <span class="d-none d-sm-inline">Dove siamo</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero-moderno">
+        <div class="hero-background"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title-moderno">Dove siamo</h1>
+        </div>
+    </div>
+
+    <!-- NAV BAR -->
+    <nav class="nav-bar-moderna">
+        <div class="container">
+            <ul class="nav justify-content-center flex-wrap gap-2 gap-lg-4">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">HOME</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="MENU.html">MENU</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="eventi.html">EVENTI</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- CONTENUTO PRINCIPALE -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="map-container-moderno fade-in">
+                    <h3 class="mb-3" style="color: var(--rosso-sagra);">
+                        <i class="bi bi-pin-map-fill"></i> Paciano (PG)
+                    </h3>
+                    <div id="map"></div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=43.0223417,12.0707972" 
+                               target="_blank" class="btn-directions-moderno">
+                                <i class="bi bi-google"></i> Google Maps
+                            </a>
+                            <div style="height: 10px;"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="https://maps.apple.com/?daddr=43.0223417,12.0707972" 
+                               target="_blank" class="btn-directions-moderno" style="background-color: #555;">
+                                <i class="bi bi-apple"></i> Apple Maps
+                            </a>
+                            <div style="height: 10px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <div class="info-card-moderna fade-in">
+                    <h3 class="info-title-moderna">
+                        <i class="bi bi-info-circle"></i> Info utili
+                    </h3>
+                    
+                    <div class="info-item-moderna">
+                        <div class="info-icon-moderna">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div>
+                            <strong>Località:</strong><br>
+                            Paciano, Provincia di Perugia
+                        </div>
+                    </div>
+                    
+                    <div class="info-item-moderna">
+                        <div class="info-icon-moderna">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+                        <div>
+                            <strong>Date sagra:</strong><br>
+                            10 - 17 Agosto 2025
+                        </div>
+                    </div>
+                    
+                    <div class="info-item-moderna">
+                        <div class="info-icon-moderna">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <div>
+                            <strong>Telefono:</strong><br>
+                            351 934 8794 (WhatsApp)
+                        </div>
+                    </div>
+                    
+                    <div class="info-item-moderna">
+                        <div class="info-icon-moderna">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+                        <div>
+                            <strong>Parcheggio:</strong><br>
+                            Loc. Casina Nova · Navetta gratuita
+                        </div>
+                    </div>
+                    
+                    <div class="navetta-badge-moderna">
+                        <i class="bi bi-bus-front fs-3 me-2"></i>
+                        <strong>Servizio Navetta Gratuito!</strong><br>
+                        <span>Dalle 19:00 alle 24:00, navetta continua dal parcheggio alla sagra.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer-moderno">
+        <div class="container">
+            <p>Sagra dello Strozzaprete · 7° Edizione · Pro Loco Paciano</p>
+            <p><i class="bi bi-telephone-fill"></i> 351 934 8794 · <i class="bi bi-facebook"></i> @prolocopaciano</p>
+            <p>10-17 Agosto 2025 · Ti aspettiamo!</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartBadge();
+            
+            // Animazioni
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            fadeElements.forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Mappa
+            const sagraCoords = [43.0223417, 12.0707972];
+            const parcheggioCoords = [43.0268387, 12.0666242];
+            
+            const map = L.map('map').setView(sagraCoords, 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+            
+            const redIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+            
+            const blueIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+            
+            const sagraMarker = L.marker(sagraCoords, { icon: redIcon }).addTo(map);
+            sagraMarker.bindPopup(`
+                <b>Sagra dello Strozzaprete</b><br>
+                Centro storico di Paciano<br>
+                10-17 Agosto 2025
+            `).openPopup();
+            
+            const parcheggioMarker = L.marker(parcheggioCoords, { icon: blueIcon }).addTo(map);
+            parcheggioMarker.bindPopup(`
+                <b>Parcheggio Gratuito</b><br>
+                Loc. Casina Nova<br>
+                Navetta gratuita 19:00-24:00
+            `);
+            
+            const latlngs = [parcheggioCoords, sagraCoords];
+            
+            L.polyline(latlngs, {
+                color: '#28a745',
+                weight: 4,
+                opacity: 0.7,
+                dashArray: '10, 10'
+            }).addTo(map).bindPopup('Percorso navetta gratuita');
+        });
+
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('sagraCart')) || [];
+            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cart-badge');
+            if (badge) {
+                badge.textContent = itemCount;
+            }
+        }
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'sagraCart') {
+                updateCartBadge();
+            }
+        });
+    </script>
+</body>
+</html>

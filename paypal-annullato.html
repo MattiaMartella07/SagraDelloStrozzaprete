@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento Annullato · Sagra dello Strozzaprete</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #f7efe2;
+            font-family: 'Trebuchet MS', sans-serif;
+        }
+        .cancel-container {
+            background: white;
+            border-radius: 30px;
+            border: 4px solid #dc3545;
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            margin: 3rem auto;
+        }
+        .cancel-icon {
+            font-size: 5rem;
+            color: #dc3545;
+        }
+        .btn-retry {
+            background-color: #db270f;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 1rem 2rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            margin: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cancel-container">
+            <div class="cancel-icon">
+                <i class="bi bi-x-circle-fill"></i>
+            </div>
+            <h1 class="display-4 fw-bold text-danger mb-3">Pagamento Annullato</h1>
+            <p class="fs-4">Il pagamento non è stato completato.</p>
+            <p class="fs-5">Puoi riprovare o contattarci per assistenza.</p>
+            <div class="mt-4">
+                <a href="carrello.html" class="btn-retry"><i class="bi bi-cart"></i> Torna al Carrello</a>
+                <a href="MENU.html" class="btn-retry" style="background-color: #e2750f;">Modifica Ordine</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

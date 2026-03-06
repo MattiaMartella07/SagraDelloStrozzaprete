@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menù · Sagra dello Strozzaprete</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <style>
+        /* VARIABILI COLORE */
+        :root {
+            --rosso-sagra: #db270f;
+            --arancio-sagra: #e2750f;
+            --giallo-sagra: #ffd700;
+            --crema-sfondo: #f7efe2;
+            --marrone-scuro: #2c1e12;
+            --marrone-chiaro: #6b4f3a;
+            --oro-gradient: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            --ombra-testo: 2px 2px 4px rgba(0,0,0,0.3);
+            --ombra-carta: 0 10px 30px rgba(219, 39, 15, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--crema-sfondo);
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            color: var(--marrone-scuro);
+            overflow-x: hidden;
+        }
+
+        /* TOP BAR */
+        .top-bar {
+            background-color: var(--rosso-sagra);
+            color: white;
+            border-bottom: 3px solid #e5b887;
+            font-weight: 600;
+        }
+
+        .top-bar-right a {
+            color: #ffeacc;
+            text-decoration: none;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .top-bar-right a:hover {
+            background-color: var(--arancio-sagra);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .cart-badge {
+            background-color: var(--giallo-sagra);
+            color: var(--marrone-scuro);
+            border-radius: 50%;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: bold;
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            border: 2px solid white;
+        }
+
+        /* HERO */
+        .hero-moderno {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 8px solid var(--arancio-sagra);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            isolation: isolate;
+        }
+
+        .hero-background {
+            position: absolute;
+            inset: 0;
+            background-image: url('images.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(4px);
+            transform: scale(1.1);
+            transition: transform 0.1s ease-out;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                45deg,
+                rgba(219, 39, 15, 0.7) 0%,
+                rgba(226, 117, 15, 0.5) 50%,
+                rgba(0, 0, 0, 0.4) 100%
+            );
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            animation: fadeInScale 1.2s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .hero-title-moderno {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 4.5rem;
+            font-weight: 400;
+            text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-sub-moderno {
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: var(--oro-gradient);
+            display: inline-block;
+            padding: 0.5rem 2.5rem;
+            border-radius: 60px;
+            border: 3px solid white;
+            color: var(--marrone-scuro);
+        }
+
+        /* NAV BAR */
+        .nav-bar-moderna {
+            background-color: var(--rosso-sagra);
+            padding: 0.8rem 1rem;
+            border-bottom: 4px solid #f3c38d;
+            box-shadow: 0 5px 0 #4e2f1d;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .nav-bar-moderna .nav-link {
+            color: #fef7d6;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .nav-bar-moderna .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--giallo-sagra);
+            transition: width 0.3s ease;
+        }
+
+        .nav-bar-moderna .nav-link:hover::before,
+        .nav-bar-moderna .nav-link.active::before {
+            width: 80%;
+        }
+
+        .nav-bar-moderna .nav-link:hover,
+        .nav-bar-moderna .nav-link.active {
+            background-color: var(--arancio-sagra);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* BANNER */
+        .skip-line-banner-moderno {
+            background: var(--oro-gradient);
+            color: var(--marrone-scuro);
+            padding: 1.2rem;
+            border-radius: 60px;
+            margin-bottom: 2rem;
+            border: 3px solid var(--rosso-sagra);
+            font-weight: 800;
+            font-size: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* SEZIONI MENU */
+        .menu-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title-moderno {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--rosso-sagra);
+            border-left: 10px solid var(--arancio-sagra);
+            padding-left: 1.2rem;
+            margin-bottom: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* CARD MENU */
+        .menu-card-moderna {
+            background: white;
+            border-radius: 25px;
+            border: 3px solid var(--arancio-sagra);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            height: 100%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .menu-card-moderna::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--oro-gradient);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .menu-card-moderna:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(219, 39, 15, 0.25);
+            border-color: var(--rosso-sagra);
+        }
+
+        .menu-card-moderna:hover::before {
+            transform: translateX(0);
+        }
+
+        .menu-card-header-moderna {
+            background: linear-gradient(135deg, var(--rosso-sagra), var(--arancio-sagra));
+            color: white;
+            padding: 1rem 1.2rem;
+            font-weight: 700;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-badge-moderno {
+            background: var(--giallo-sagra);
+            color: var(--marrone-scuro);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            border: 2px solid white;
+        }
+
+        .menu-card-body {
+            padding: 1.2rem;
+        }
+
+        .menu-item {
+            border-bottom: 1px dashed var(--arancio-sagra);
+            padding: 0.8rem 0;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-info h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            color: var(--marrone-scuro);
+        }
+
+        .item-info p {
+            font-size: 0.9rem;
+            color: var(--marrone-chiaro);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .btn-add-moderno {
+            background: var(--rosso-sagra);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .btn-add-moderno:hover {
+            background: var(--arancio-sagra);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(219,39,15,0.3);
+            border-color: var(--giallo-sagra);
+        }
+
+        .btn-add-moderno.in-cart {
+            background: var(--arancio-sagra);
+            border: 2px solid var(--giallo-sagra);
+        }
+
+        /* SIDEBAR CARRELLO */
+        .cart-sidebar-moderna {
+            background: white;
+            border-radius: 40px;
+            border: 4px solid var(--rosso-sagra);
+            padding: 1.5rem;
+            position: sticky;
+            top: 20px;
+            box-shadow: var(--ombra-carta);
+        }
+
+        .cart-title-moderno {
+            font-size: 1.8rem;
+            color: var(--rosso-sagra);
+            border-bottom: 3px solid var(--arancio-sagra);
+            padding-bottom: 0.8rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-count {
+            background: var(--giallo-sagra);
+            color: var(--marrone-scuro);
+            border-radius: 50%;
+            padding: 0.2rem 0.8rem;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .cart-items {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .cart-item-moderna {
+            background: #fcf3e8;
+            border-radius: 20px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--arancio-sagra);
+            transition: all 0.3s ease;
+        }
+
+        .cart-item-moderna:hover {
+            transform: translateX(5px);
+            border-left-width: 8px;
+        }
+
+        .cart-total-moderno {
+            border-top: 2px solid var(--arancio-sagra);
+            padding-top: 1rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-order-moderno {
+            background: var(--rosso-sagra);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 0.8rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 100%;
+            margin-top: 0.8rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .btn-order-moderno:hover {
+            background: var(--arancio-sagra);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(219,39,15,0.3);
+            color: white;
+        }
+
+        .btn-remove {
+            background: none;
+            border: none;
+            color: var(--rosso-sagra);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0 5px;
+            font-weight: bold;
+        }
+
+        .btn-remove:hover {
+            color: var(--arancio-sagra);
+            transform: scale(1.2);
+        }
+
+        /* FOOTER */
+        .footer-moderno {
+            background: linear-gradient(135deg, var(--marrone-scuro), #4a2e1b);
+            color: #ffe5ce;
+            text-align: center;
+            padding: 2.5rem;
+            border-top: 6px solid var(--arancio-sagra);
+            margin-top: 3rem;
+        }
+
+        .footer-moderno p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-moderno i {
+            color: var(--giallo-sagra);
+            margin-right: 0.3rem;
+        }
+
+        /* ANIMAZIONI */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-title-moderno {
+                font-size: 3rem;
+            }
+            
+            .hero-sub-moderno {
+                font-size: 1.2rem;
+            }
+            
+            .section-title-moderno {
+                font-size: 2rem;
+            }
+            
+            .cart-sidebar-moderna {
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar py-2">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6">
+                    <!-- Vuoto -->
+                </div>
+                <div class="col-12 col-md-6 d-flex gap-4 justify-content-center justify-content-md-end mt-2 mt-md-0 top-bar-right">
+                    <a href="AccessoAdmin.html"><i class="bi bi-person-circle"></i> <span class="d-none d-sm-inline">Accedi</span></a>
+                    <a href="carrello.html" id="cart-link">
+                        <i class="bi bi-cart-fill"></i> <span class="d-none d-sm-inline">Carrello</span>
+                        <span class="cart-badge" id="cart-badge">0</span>
+                    </a>
+                    <a href="dovesiamo.html"><i class="bi bi-geo-alt-fill"></i> <span class="d-none d-sm-inline">Dove siamo</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero-moderno">
+        <div class="hero-background"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title-moderno">Il Nostro Menù</h1>
+            <div class="hero-sub-moderno">dal 10 al 17 Agosto</div>
+        </div>
+    </div>
+
+    <!-- NAV BAR -->
+    <nav class="nav-bar-moderna">
+        <div class="container">
+            <ul class="nav justify-content-center flex-wrap gap-2 gap-lg-4">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">HOME</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="MENU.html">MENU</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="eventi.html">EVENTI</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- CONTENUTO PRINCIPALE -->
+    <div class="container my-5">
+        <!-- BANNER -->
+        <div class="skip-line-banner-moderno fade-in">
+            </i> ORDINA ONLINE E SALTA LA FILA </i>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                
+                <!-- ANTIPASTI -->
+                <div class="menu-section">
+                    <h2 class="section-title-moderno fade-in">Antipasti</h2>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Antipasto del Prete</span>
+                                    <span class="price-badge-moderno">€8</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <div class="menu-item">
+                                        <div class="item-info">
+                                            <h4>Prosciutto crudo e melone</h4>
+                                            <p>Prosciutto crudo stagionato, melone freschissimo</p>
+                                        </div>
+                                        <button class="btn-add-moderno" onclick="toggleCart('Antipasto del Prete', 8)" id="btn-Antipasto del Prete">
+                                            <i class="bi bi-plus-circle"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Antipasto del Frate</span>
+                                    <span class="price-badge-moderno">€12</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <div class="menu-item">
+                                        <div class="item-info">
+                                            <h4>Verdure grigliate, crostini, formaggi</h4>
+                                            <p>Selezione di prodotti tipici locali</p>
+                                        </div>
+                                        <button class="btn-add-moderno" onclick="toggleCart('Antipasto del Frate', 12)" id="btn-Antipasto del Frate">
+                                            <i class="bi bi-plus-circle"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRIMI -->
+                <div class="menu-section">
+                    <h2 class="section-title-moderno fade-in">Primi</h2>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Strozzaprete del Priore</span>
+                                    <span class="price-badge-moderno">€10</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <div class="menu-item">
+                                        <div class="item-info">
+                                            <h4>Pomodori, rucola e parmigiano</h4>
+                                            <p>Classico e delicato</p>
+                                        </div>
+                                        <button class="btn-add-moderno" onclick="toggleCart('Strozzaprete del Priore', 10)" id="btn-Strozzaprete del Priore">
+                                            <i class="bi bi-plus-circle"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Strozzaprete della Suora</span>
+                                    <span class="price-badge-moderno">€13</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <div class="menu-item">
+                                        <div class="item-info">
+                                            <h4>Norcina e tartufo</h4>
+                                            <p>Salsiccia, crema di tartufo, funghi</p>
+                                        </div>
+                                        <button class="btn-add-moderno" onclick="toggleCart('Strozzaprete della Suora', 13)" id="btn-Strozzaprete della Suora">
+                                            <i class="bi bi-plus-circle"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Strozzaprete Indiavolato</span>
+                                    <span class="price-badge-moderno">€11</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <div class="menu-item">
+                                        <div class="item-info">
+                                            <h4>Pomodoro piccante e guanciale</h4>
+                                            <p>Un tocco di ardore</p>
+                                        </div>
+                                        <button class="btn-add-moderno" onclick="toggleCart('Strozzaprete Indiavolato', 11)" id="btn-Strozzaprete Indiavolato">
+                                            <i class="bi bi-plus-circle"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Strozzaprete del Chirichetto</span>
+                                    <span class="price-badge-moderno">€12</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <div class="menu-item">
+                                        <div class="item-info">
+                                            <h4>Sugo di Cinta Senese</h4>
+                                            <p>Ragù di Cinta Senese</p>
+                                        </div>
+                                        <button class="btn-add-moderno" onclick="toggleCart('Strozzaprete del Chirichetto', 12)" id="btn-Strozzaprete del Chirichetto">
+                                            <i class="bi bi-plus-circle"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Strozzaprete della Perpetua</span>
+                                    <span class="price-badge-moderno">€10</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <div class="menu-item">
+                                        <div class="item-info">
+                                            <h4>Cacio e pepe</h4>
+                                            <p>La semplicità romana</p>
+                                        </div>
+                                        <button class="btn-add-moderno" onclick="toggleCart('Strozzaprete della Perpetua', 10)" id="btn-Strozzaprete della Perpetua">
+                                            <i class="bi bi-plus-circle"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Strozzaprete del Sacrestano</span>
+                                    <span class="price-badge-moderno">€11</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <div class="menu-item">
+                                        <div class="item-info">
+                                            <h4>Pesto alla genovese</h4>
+                                            <p>Basilico, pinoli, grana</p>
+                                        </div>
+                                        <button class="btn-add-moderno" onclick="toggleCart('Strozzaprete del Sacrestano', 11)" id="btn-Strozzaprete del Sacrestano">
+                                            <i class="bi bi-plus-circle"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECONDI -->
+                <div class="menu-section">
+                    <h2 class="section-title-moderno fade-in">Secondi</h2>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Grigliata Mista</span>
+                                    <span class="price-badge-moderno">€15</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <div class="menu-item">
+                                        <div class="item-info">
+                                            <h4>Salsiccia, costine, spiedino</h4>
+                                            <p>Carne mista alla griglia</p>
+                                        </div>
+                                        <button class="btn-add-moderno" onclick="toggleCart('Grigliata Mista', 15)" id="btn-Grigliata Mista">
+                                            <i class="bi bi-plus-circle"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Stinco di Maiale</span>
+                                    <span class="price-badge-moderno">€14</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <div class="menu-item">
+                                        <div class="item-info">
+                                            <h4>Stinco al forno con patate</h4>
+                                            <p>Cotto lentamente, morbidissimo</p>
+                                        </div>
+                                        <button class="btn-add-moderno" onclick="toggleCart('Stinco di Maiale', 14)" id="btn-Stinco di Maiale">
+                                            <i class="bi bi-plus-circle"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Straccetti di Chianina</span>
+                                    <span class="price-badge-moderno">€16</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <div class="menu-item">
+                                        <div class="item-info">
+                                            <h4>Con pomodorini e rucola</h4>
+                                            <p>Carne pregiata, fresca e tenera</p>
+                                        </div>
+                                        <button class="btn-add-moderno" onclick="toggleCart('Straccetti di Chianina', 16)" id="btn-Straccetti di Chianina">
+                                            <i class="bi bi-plus-circle"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DOLCI -->
+                <div class="menu-section">
+                    <h2 class="section-title-moderno fade-in">Dolci</h2>
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Panna Cotta</span>
+                                    <span class="price-badge-moderno">€5</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <button class="btn-add-moderno" onclick="toggleCart('Panna Cotta', 5)" id="btn-Panna Cotta">
+                                        <i class="bi bi-plus-circle"></i> Aggiungi
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Zuppa Inglese</span>
+                                    <span class="price-badge-moderno">€5</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <button class="btn-add-moderno" onclick="toggleCart('Zuppa Inglese', 5)" id="btn-Zuppa Inglese">
+                                        <i class="bi bi-plus-circle"></i> Aggiungi
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Tozzetti</span>
+                                    <span class="price-badge-moderno">€6</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <button class="btn-add-moderno" onclick="toggleCart('Tozzetti col Vinsanto', 6)" id="btn-Tozzetti col Vinsanto">
+                                        <i class="bi bi-plus-circle"></i> Aggiungi
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="menu-card-moderna fade-in">
+                                <div class="menu-card-header-moderna">
+                                    <span>Cocomero</span>
+                                    <span class="price-badge-moderno">€3</span>
+                                </div>
+                                <div class="menu-card-body">
+                                    <button class="btn-add-moderno" onclick="toggleCart('Cocomero', 3)" id="btn-Cocomero">
+                                        <i class="bi bi-plus-circle"></i> Aggiungi
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIDEBAR CARRELLO -->
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                <div class="cart-sidebar-moderna fade-in">
+                    <div class="cart-title-moderno">
+                        <i class="bi bi-cart-fill"></i> Il tuo ordine
+                        <span class="badge-count" id="cart-count">0</span>
+                    </div>
+                    
+                    <div class="cart-items" id="cart-items">
+                        <p class="text-muted text-center">Nessun piatto selezionato</p>
+                    </div>
+                    
+                    <div class="cart-total-moderno" id="cart-total">
+                        <span>Totale:</span>
+                        <span>€<span id="cart-total-amount">0.00</span></span>
+                    </div>
+                    
+                    <a href="carrello.html" class="btn-order-moderno">
+                        <i class="bi bi-eye"></i> Visualizza carrello
+                    </a>
+                    <button class="btn-order-moderno" style="background-color: #6c757d;" onclick="clearCart()">
+                        <i class="bi bi-trash"></i> Svuota carrello
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer-moderno">
+        <div class="container">
+            <p>Sagra dello Strozzaprete · 7° Edizione · Pro Loco Paciano</p>
+            <p><i class="bi bi-telephone-fill"></i> 351 934 8794 · <i class="bi bi-facebook"></i> @prolocopaciano</p>
+            <p>10-17 Agosto 2025 · Ordina online e salta la fila</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let cart = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCartFromStorage();
+            updateCartDisplay();
+            updateCartBadge();
+            updateAllButtonsState();
+            
+            // Animazioni
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            fadeElements.forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        function loadCartFromStorage() {
+            const savedCart = localStorage.getItem('sagraCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+            }
+        }
+
+        function saveCartToStorage() {
+            localStorage.setItem('sagraCart', JSON.stringify(cart));
+        }
+
+        function updateCartBadge() {
+            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cart-badge');
+            const cartCount = document.getElementById('cart-count');
+            
+            if (badge) badge.textContent = itemCount;
+            if (cartCount) cartCount.textContent = itemCount;
+        }
+
+        function toggleCart(name, price) {
+            const existingItemIndex = cart.findIndex(item => item.name === name);
+            
+            if (existingItemIndex !== -1) {
+                cart.splice(existingItemIndex, 1);
+                showNotification(`${name} rimosso dal carrello`);
+            } else {
+                cart.push({ name, price, quantity: 1, id: Date.now() + name });
+                showNotification(`${name} aggiunto al carrello`);
+            }
+            
+            saveCartToStorage();
+            updateCartDisplay();
+            updateCartBadge();
+            updateButtonState(name);
+        }
+
+        function updateCartDisplay() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartTotalSpan = document.getElementById('cart-total-amount');
+            const cartCount = document.getElementById('cart-count');
+            
+            if (!cartItemsContainer || !cartTotalSpan) return;
+            
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-muted text-center">Nessun piatto selezionato</p>';
+                cartTotalSpan.textContent = '0.00';
+                if (cartCount) cartCount.textContent = '0';
+                return;
+            }
+            
+            let html = '';
+            let total = 0;
+            let itemCount = 0;
+            
+            cart.slice(0, 3).forEach(item => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+                itemCount += item.quantity;
+                
+                html += `
+                    <div class="cart-item-moderna">
+                        <div>
+                            <h5 style="margin-bottom: 0.2rem;">${item.name}</h5>
+                            <p style="font-size: 0.85rem; color: var(--marrone-chiaro);">€${item.price.toFixed(2)} x ${item.quantity}</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span style="font-weight: 700; color: var(--rosso-sagra);">€${subtotal.toFixed(2)}</span>
+                            <div>
+                                <button class="btn-remove" onclick="increaseQuantity('${item.name}')">+</button>
+                                <button class="btn-remove" onclick="decreaseQuantity('${item.name}')">-</button>
+                            </div>
+                            <button class="btn-remove" onclick="removeFromCart('${item.name}')">x</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (cart.length > 3) {
+                html += `<p class="text-center text-muted mt-2">... e altri ${cart.length - 3} articoli</p>`;
+            }
+            
+            cartItemsContainer.innerHTML = html;
+            cartTotalSpan.textContent = total.toFixed(2);
+            if (cartCount) cartCount.textContent = itemCount;
+        }
+
+        function updateButtonState(itemName) {
+            const button = document.getElementById(`btn-${itemName}`);
+            if (button) {
+                const itemInCart = cart.some(item => item.name === itemName);
+                if (itemInCart) {
+                    button.classList.add('in-cart');
+                    button.innerHTML = '<i class="bi bi-check-circle"></i> Aggiunto';
+                } else {
+                    button.classList.remove('in-cart');
+                    button.innerHTML = '<i class="bi bi-plus-circle"></i> Aggiungi';
+                }
+            }
+        }
+
+        function updateAllButtonsState() {
+            const buttons = document.querySelectorAll('.btn-add-moderno');
+            buttons.forEach(button => {
+                const itemName = button.id.replace('btn-', '');
+                if (itemName) {
+                    const itemInCart = cart.some(item => item.name === itemName);
+                    if (itemInCart) {
+                        button.classList.add('in-cart');
+                        button.innerHTML = '<i class="bi bi-check-circle"></i> Aggiunto';
+                    } else {
+                        button.classList.remove('in-cart');
+                        button.innerHTML = '<i class="bi bi-plus-circle"></i> Aggiungi';
+                    }
+                }
+            });
+        }
+
+        function increaseQuantity(name) {
+            const item = cart.find(item => item.name === name);
+            if (item) {
+                item.quantity += 1;
+                saveCartToStorage();
+                updateCartDisplay();
+                updateCartBadge();
+            }
+        }
+
+        function decreaseQuantity(name) {
+            const item = cart.find(item => item.name === name);
+            if (item) {
+                if (item.quantity > 1) {
+                    item.quantity -= 1;
+                } else {
+                    removeFromCart(name);
+                    return;
+                }
+                saveCartToStorage();
+                updateCartDisplay();
+                updateCartBadge();
+            }
+        }
+
+        function removeFromCart(name) {
+            cart = cart.filter(item => item.name !== name);
+            saveCartToStorage();
+            updateCartDisplay();
+            updateCartBadge();
+            updateButtonState(name);
+            showNotification(`${name} rimosso dal carrello`);
+        }
+
+        function clearCart() {
+            if (confirm('Sei sicuro di voler svuotare il carrello?')) {
+                cart = [];
+                saveCartToStorage();
+                updateCartDisplay();
+                updateCartBadge();
+                updateAllButtonsState();
+                showNotification('Carrello svuotato');
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.left = '50%';
+            notification.style.transform = 'translateX(-50%)';
+            notification.style.backgroundColor = '#28a745';
+            notification.style.color = 'white';
+            notification.style.padding = '10px 20px';
+            notification.style.borderRadius = '30px';
+            notification.style.zIndex = '9999';
+            notification.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+            notification.style.fontWeight = 'bold';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

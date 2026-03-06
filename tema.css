@@ -1,0 +1,12 @@
+/* theme.css - Da includere in tutte le pagine */
+:root {
+    --rosso-sagra: #db270f;
+    --arancio-sagra: #e2750f;
+    --giallo-sagra: #ffd700;
+    --crema-sfondo: #f7efe2;
+    --marrone-scuro: #2c1e12;
+    --marrone-chiaro: #6b4f3a;
+    --oro-gradient: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+    --ombra-testo: 2px 2px 4px rgba(0,0,0,0.3);
+    --ombra-carta: 0 10px 30px rgba(219, 39, 15, 0.15);
+}

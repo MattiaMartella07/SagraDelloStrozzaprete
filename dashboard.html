@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin · Sagra dello Strozzaprete</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Firebase SDK (versione 8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <style>
+        /* TUTTI I TUOI STILI ORIGINALI - INVARIATI */
+        :root {
+            --rosso-sagra: #db270f;
+            --arancio-sagra: #e2750f;
+            --giallo-sagra: #ffd700;
+            --crema-sfondo: #f7efe2;
+            --marrone-scuro: #2c1e12;
+            --marrone-chiaro: #6b4f3a;
+            --oro-gradient: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            --ombra-testo: 2px 2px 4px rgba(0,0,0,0.3);
+            --ombra-carta: 0 10px 30px rgba(219, 39, 15, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--crema-sfondo);
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            color: var(--marrone-scuro);
+        }
+
+        .top-bar {
+            background-color: var(--rosso-sagra);
+            color: white;
+            border-bottom: 3px solid #e5b887;
+            font-weight: 600;
+        }
+
+        .top-bar-right a {
+            color: #ffeacc;
+            text-decoration: none;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .top-bar-right a:hover {
+            background-color: var(--arancio-sagra);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .cart-badge {
+            background-color: var(--giallo-sagra);
+            color: var(--marrone-scuro);
+            border-radius: 50%;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: bold;
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            border: 2px solid white;
+        }
+
+        .nav-bar-moderna {
+            background-color: var(--rosso-sagra);
+            padding: 0.8rem 1rem;
+            border-bottom: 4px solid #f3c38d;
+            box-shadow: 0 5px 0 #4e2f1d;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .nav-bar-moderna .nav-link {
+            color: #fef7d6;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .nav-bar-moderna .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--giallo-sagra);
+            transition: width 0.3s ease;
+        }
+
+        .nav-bar-moderna .nav-link:hover::before,
+        .nav-bar-moderna .nav-link.active::before {
+            width: 80%;
+        }
+
+        .nav-bar-moderna .nav-link:hover,
+        .nav-bar-moderna .nav-link.active {
+            background-color: var(--arancio-sagra);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .welcome-banner-moderno {
+            background: var(--oro-gradient);
+            padding: 2rem;
+            border-radius: 60px;
+            margin-bottom: 2rem;
+            border: 4px solid var(--rosso-sagra);
+            box-shadow: var(--ombra-carta);
+            text-align: center;
+        }
+
+        .welcome-banner-moderno h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--marrone-scuro);
+        }
+
+        .last-update {
+            background: white;
+            display: inline-block;
+            padding: 0.3rem 1.5rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            border: 2px solid var(--rosso-sagra);
+        }
+
+        .stats-card-moderna {
+            background: white;
+            border-radius: 30px;
+            border: 3px solid var(--rosso-sagra);
+            padding: 1.5rem;
+            text-align: center;
+            height: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .stats-card-moderna:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(219,39,15,0.25);
+        }
+
+        .stats-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--rosso-sagra);
+        }
+
+        .day-section-moderna {
+            margin-bottom: 3rem;
+        }
+
+        .day-title-moderna {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--rosso-sagra);
+            border-left: 10px solid var(--arancio-sagra);
+            padding-left: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .day-badge {
+            background: var(--giallo-sagra);
+            color: var(--marrone-scuro);
+            font-size: 1rem;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+        }
+
+        .order-card-moderna {
+            background: white;
+            border-radius: 25px;
+            border: 3px solid var(--arancio-sagra);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .order-card-moderna:hover {
+            box-shadow: 0 10px 30px rgba(219,39,15,0.2);
+        }
+
+        .order-header-moderna {
+            background: linear-gradient(135deg, var(--arancio-sagra), var(--rosso-sagra));
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .order-header-moderna:hover {
+            background: var(--rosso-sagra);
+            padding-left: 2rem;
+        }
+
+        .order-body {
+            padding: 1.5rem;
+            display: none;
+            background: #fcf3e8;
+        }
+
+        .order-body.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .customer-info, .order-items, .order-notes {
+            background: white;
+            border-radius: 20px;
+            padding: 1rem;
+            height: 100%;
+            border: 2px solid var(--arancio-sagra);
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed var(--arancio-sagra);
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .badge-payment {
+            font-size: 0.9rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            margin-right: 10px;
+            font-weight: 600;
+        }
+
+        .badge-cash { background-color: #28a745; color: white; }
+        .badge-card { background-color: #007bff; color: white; }
+        .badge-paypal { background-color: #003087; color: white; }
+        .badge-waiting { background-color: #ffc107; color: var(--marrone-scuro); }
+
+        .status-select {
+            width: auto;
+            display: inline-block;
+            margin-right: 10px;
+            border-radius: 40px;
+            border: 2px solid var(--arancio-sagra);
+        }
+
+        .btn-dashboard {
+            background: var(--rosso-sagra);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-dashboard:hover {
+            background: var(--arancio-sagra);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(219,39,15,0.3);
+            color: white;
+        }
+
+        .btn-outline-dashboard {
+            background: transparent;
+            border: 2px solid var(--rosso-sagra);
+            color: var(--rosso-sagra);
+        }
+
+        .btn-outline-dashboard:hover {
+            background: var(--rosso-sagra);
+            color: white;
+        }
+
+        .floating-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .btn-floating {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--rosso-sagra);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-floating:hover {
+            transform: scale(1.1);
+            background: var(--arancio-sagra);
+        }
+
+        .export-menu {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: white;
+            border-radius: 30px;
+            border: 3px solid var(--rosso-sagra);
+            padding: 1rem;
+            display: none;
+            z-index: 1001;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .export-menu.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .export-option {
+            padding: 0.8rem 2rem;
+            margin: 0.3rem 0;
+            border-radius: 40px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .export-option.json {
+            background-color: #ffc107;
+            color: var(--marrone-scuro);
+        }
+
+        .export-option.pdf {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .export-option:hover {
+            transform: translateX(5px);
+            filter: brightness(1.1);
+        }
+
+        .empty-state-moderna {
+            text-align: center;
+            padding: 4rem;
+            background: white;
+            border-radius: 50px;
+            border: 4px dashed var(--arancio-sagra);
+        }
+
+        .empty-state-moderna i {
+            font-size: 5rem;
+            color: var(--arancio-sagra);
+        }
+
+        .footer-moderno {
+            background: linear-gradient(135deg, var(--marrone-scuro), #4a2e1b);
+            color: #ffe5ce;
+            text-align: center;
+            padding: 2rem;
+            border-top: 6px solid var(--arancio-sagra);
+            margin-top: 3rem;
+        }
+
+        .footer-moderno p {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .footer-moderno i {
+            color: var(--giallo-sagra);
+            margin-right: 0.3rem;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .welcome-banner-moderno h2 {
+                font-size: 1.8rem;
+            }
+            
+            .day-title-moderna {
+                font-size: 1.8rem;
+            }
+            
+            .order-header-moderna {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR MODIFICATA con username e logout -->
+    <div class="top-bar py-2">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6">
+                    <span class="text-white" id="welcome-message">
+                        <i class="bi bi-person-circle"></i> 
+                        <span id="admin-username">Caricamento...</span>
+                    </span>
+                </div>
+                <div class="col-12 col-md-6 d-flex gap-4 justify-content-center justify-content-md-end mt-2 mt-md-0 top-bar-right">
+                    <a href="index.html" class="text-white text-decoration-none">
+                        <i class="bi bi-house"></i> Home
+                    </a>
+                    <button onclick="logoutAdmin()" class="btn btn-sm btn-warning">
+                        <i class="bi bi-box-arrow-right"></i> Esci
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAV BAR (invariata) -->
+    <nav class="nav-bar-moderna">
+        <div class="container">
+            <ul class="nav justify-content-center flex-wrap gap-2 gap-lg-4">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">HOME</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="MENU.html">MENU</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="eventi.html">EVENTI</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- CONTENUTO PRINCIPALE (invariato) -->
+    <div class="container my-5">
+        <!-- WELCOME BANNER -->
+        <div class="welcome-banner-moderno fade-in">
+            <h2><i class="bi bi-person-badge"></i> Dashboard Amministratore</h2>
+            <p class="fs-5" id="admin-name">Benvenuto!</p>
+            <span class="last-update" id="lastUpdate">Caricamento in corso...</span>
+        </div>
+
+        <!-- STATISTICHE -->
+        <div class="row g-4 mb-5" id="statsContainer">
+            <div class="col-md-4">
+                <div class="stats-card-moderna">
+                    <i class="bi bi-calendar-check fs-1" style="color: var(--arancio-sagra);"></i>
+                    <div class="stats-number">0</div>
+                    <h5>Prenotazioni totali</h5>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card-moderna">
+                    <i class="bi bi-people fs-1" style="color: var(--arancio-sagra);"></i>
+                    <div class="stats-number">0</div>
+                    <h5>Coperti totali</h5>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card-moderna">
+                    <i class="bi bi-cash-stack fs-1" style="color: var(--arancio-sagra);"></i>
+                    <div class="stats-number">€ 0.00</div>
+                    <h5>Incasso totale</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONI PER GIORNO -->
+        <div id="daysContainer" class="fade-in">
+            <div class="text-center my-5">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Caricamento...</span>
+                </div>
+                <p class="mt-3">Caricamento ordini in corso...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PULSANTI FLOTTANTI -->
+    <div class="floating-buttons">
+        <button class="btn-floating" onclick="loadOrders()" title="Aggiorna">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <button class="btn-floating" onclick="toggleExportMenu()" title="Esporta" style="background-color: #28a745;">
+            <i class="bi bi-download"></i>
+        </button>
+    </div>
+
+    <!-- MENU ESPORTAZIONE -->
+    <div class="export-menu" id="exportMenu">
+        <div class="export-option json" onclick="exportToJSON()">
+            <i class="bi bi-filetype-json"></i> Esporta JSON
+        </div>
+        <div class="export-option pdf" onclick="exportToPDF()">
+            <i class="bi bi-filetype-pdf"></i> Esporta PDF
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer-moderno">
+        <div class="container">
+            <p>Sagra dello Strozzaprete · 7° Edizione · Pro Loco Paciano</p>
+            <p><i class="bi bi-telephone-fill"></i> 351 934 8794 · Dashboard Amministratore</p>
+            <p>10-17 Agosto 2025</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Configurazione Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC6sTFxBOXRzZ2nMXhm_XMOxVnFcdUncGM",
+            authDomain: "sagra-strozzaprete2026.firebaseapp.com",
+            projectId: "sagra-strozzaprete2026",
+            storageBucket: "sagra-strozzaprete2026.firebasestorage.app",
+            messagingSenderId: "711270004618",
+            appId: "1:711270004618:web:86c8b4f0b54105a41a7a73"
+        };
+
+        // Inizializza Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let exportMenuVisible = false;
+        let allOrders = [];
+
+        // VERIFICA AUTENTICAZIONE ALL'AVVIO
+        auth.onAuthStateChanged(async (user) => {
+            if (!user && sessionStorage.getItem('demoAdmin') !== 'true') {
+                console.log('Utente non autenticato, reindirizzamento al login');
+                window.location.href = 'AccessoAdmin.html';
+                return;
+            }
+            
+            // Mostra username
+            if (sessionStorage.getItem('demoAdmin') === 'true') {
+                document.getElementById('admin-username').textContent = 'AdminSagra (Demo)';
+                document.getElementById('admin-name').textContent = 'Benvenuto AdminSagra (Modalità Demo)';
+                loadOrders(); // Carica ordini anche in demo
+            } else if (user) {
+                // Cerca username in Firestore
+                try {
+                    const adminDoc = await db.collection('admins').doc(user.uid).get();
+                    if (adminDoc.exists) {
+                        const username = adminDoc.data().username || user.displayName || user.email;
+                        document.getElementById('admin-username').textContent = username;
+                        document.getElementById('admin-name').textContent = `Benvenuto ${username}`;
+                    } else {
+                        document.getElementById('admin-username').textContent = user.displayName || user.email;
+                        document.getElementById('admin-name').textContent = `Benvenuto ${user.displayName || user.email}`;
+                    }
+                } catch (error) {
+                    console.error('Errore nel caricamento username:', error);
+                    document.getElementById('admin-username').textContent = user.displayName || user.email;
+                }
+                loadOrders();
+            }
+        });
+
+        // Funzione logout
+        async function logoutAdmin() {
+            if (sessionStorage.getItem('demoAdmin') === 'true') {
+                sessionStorage.removeItem('demoAdmin');
+                sessionStorage.removeItem('adminUsername');
+                window.location.href = 'AccessoAdmin.html';
+            } else {
+                await auth.signOut();
+                window.location.href = 'AccessoAdmin.html';
+            }
+        }
+
+        // Funzione principale per caricare gli ordini
+        async function loadOrders() {
+            try {
+                console.log('🔄 Caricamento ordini da Firebase...');
+                
+                const snapshot = await db.collection('orders').get();
+                const orders = [];
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    orders.push({
+                        id: doc.id,
+                        ...data
+                    });
+                });
+                
+                console.log(`✅ Trovati ${orders.length} ordini`);
+                
+                allOrders = orders;
+                
+                document.getElementById('lastUpdate').textContent = 
+                    'Ultimo aggiornamento: ' + new Date().toLocaleTimeString();
+
+                // Calcola statistiche
+                let totalOrders = orders.length;
+                let totalCustomers = orders.reduce((sum, order) => sum + (order.customers || 1), 0);
+                let totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+
+                // Aggiorna statistiche
+                document.getElementById('statsContainer').innerHTML = `
+                    <div class="col-md-4">
+                        <div class="stats-card-moderna">
+                            <i class="bi bi-calendar-check fs-1" style="color: var(--arancio-sagra);"></i>
+                            <div class="stats-number">${totalOrders}</div>
+                            <h5>Prenotazioni totali</h5>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card-moderna">
+                            <i class="bi bi-people fs-1" style="color: var(--arancio-sagra);"></i>
+                            <div class="stats-number">${totalCustomers}</div>
+                            <h5>Coperti totali</h5>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card-moderna">
+                            <i class="bi bi-cash-stack fs-1" style="color: var(--arancio-sagra);"></i>
+                            <div class="stats-number">€ ${totalRevenue.toFixed(2)}</div>
+                            <h5>Incasso totale</h5>
+                        </div>
+                    </div>
+                `;
+
+                if (orders.length === 0) {
+                    document.getElementById('daysContainer').innerHTML = `
+                        <div class="empty-state-moderna">
+                            <i class="bi bi-inbox"></i>
+                            <h3 class="mt-3">Nessuna prenotazione</h3>
+                            <p class="text-muted">Gli ordini effettuati appariranno qui</p>
+                            <a href="MENU.html" class="btn-dashboard mt-3">Vai al MENU per testare</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Raggruppa per giorno
+                const ordersByDay = {};
+                orders.forEach(order => {
+                    if (!ordersByDay[order.day]) {
+                        ordersByDay[order.day] = [];
+                    }
+                    ordersByDay[order.day].push(order);
+                });
+
+                const days = ['10 Agosto', '11 Agosto', '12 Agosto', '13 Agosto', 
+                             '14 Agosto', '15 Agosto', '16 Agosto', '17 Agosto'];
+
+                let daysHtml = '';
+
+                days.forEach(day => {
+                    const dayOrders = ordersByDay[day] || [];
+                    dayOrders.sort((a, b) => (a.time || '19:30').localeCompare(b.time || '19:30'));
+
+                    let dayOrdersHtml = '';
+                    
+                    dayOrders.forEach(order => {
+                        let paymentBadge = '';
+                        if (order.paymentMethod && order.paymentMethod.includes('Carta')) {
+                            paymentBadge = '<span class="badge-payment badge-card">Carta</span>';
+                        } else if (order.paymentMethod && order.paymentMethod.includes('PayPal')) {
+                            paymentBadge = '<span class="badge-payment badge-paypal">PayPal</span>';
+                        } else if (order.paymentMethod && order.paymentMethod.includes('Contanti')) {
+                            paymentBadge = '<span class="badge-payment badge-cash">Contanti</span>';
+                        } else {
+                            paymentBadge = '<span class="badge-payment badge-waiting">Da definire</span>';
+                        }
+
+                        let statusBadge = '';
+                        switch(order.status) {
+                            case 'Confermato':
+                                statusBadge = '<span class="badge bg-success">Confermato</span>';
+                                break;
+                            case 'In preparazione':
+                                statusBadge = '<span class="badge bg-warning text-dark">In preparazione</span>';
+                                break;
+                            case 'Pronto':
+                                statusBadge = '<span class="badge bg-info">Pronto</span>';
+                                break;
+                            case 'Completato':
+                                statusBadge = '<span class="badge bg-secondary">Completato</span>';
+                                break;
+                            default:
+                                statusBadge = '<span class="badge bg-warning">In attesa</span>';
+                        }
+
+                        let itemsHtml = '';
+                        if (order.items && order.items.length > 0) {
+                            order.items.forEach(item => {
+                                itemsHtml += `
+                                    <div class="item-row">
+                                        <span>${item.name} x${item.quantity}</span>
+                                        <span>€ ${(item.subtotal || item.price * item.quantity).toFixed(2)}</span>
+                                    </div>
+                                `;
+                            });
+                        }
+
+                        dayOrdersHtml += `
+                            <div class="order-card-moderna">
+                                <div class="order-header-moderna" onclick="toggleOrder('${order.id}')">
+                                    <div>
+                                        <i class="bi bi-person-circle"></i> ${order.customer?.name || 'N/D'}
+                                        <span class="ms-3"><i class="bi bi-clock"></i> ${order.time || 'N/D'}</span>
+                                    </div>
+                                    <div>
+                                        ${paymentBadge}
+                                        ${statusBadge}
+                                        <span class="ms-2 fw-bold">€ ${(order.total || 0).toFixed(2)}</span>
+                                        <i class="bi bi-chevron-down ms-3"></i>
+                                    </div>
+                                </div>
+                                <div class="order-body" id="order-${order.id}">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="customer-info">
+                                                <h6><i class="bi bi-person-vcard"></i> Dati cliente</h6>
+                                                <p class="mb-1"><strong>Nome:</strong> ${order.customer?.name || 'N/D'}</p>
+                                                <p class="mb-1"><strong>Email:</strong> ${order.customer?.email || 'N/D'}</p>
+                                                <p class="mb-1"><strong>Telefono:</strong> ${order.customer?.phone || 'N/D'}</p>
+                                                <p class="mb-1"><strong>Coperti:</strong> ${order.customers || 1}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="order-items">
+                                                <h6><i class="bi bi-basket"></i> Ordine</h6>
+                                                ${itemsHtml}
+                                                <div class="item-row fw-bold mt-2 pt-2 border-top border-2">
+                                                    <span>Totale</span>
+                                                    <span>€ ${(order.total || 0).toFixed(2)}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    ${order.notes ? `
+                                    <div class="order-notes mt-3">
+                                        <i class="bi bi-chat-text"></i> <strong>Note:</strong> ${order.notes}
+                                    </div>
+                                    ` : ''}
+                                    <div class="mt-3 d-flex justify-content-end align-items-center gap-2 flex-wrap">
+                                        <select class="form-select status-select" onchange="updateStatus('${order.id}', this.value)">
+                                            <option value="Confermato" ${order.status === 'Confermato' ? 'selected' : ''}>Confermato</option>
+                                            <option value="In preparazione" ${order.status === 'In preparazione' ? 'selected' : ''}>In preparazione</option>
+                                            <option value="Pronto" ${order.status === 'Pronto' ? 'selected' : ''}>Pronto</option>
+                                            <option value="Completato" ${order.status === 'Completato' ? 'selected' : ''}>Completato</option>
+                                        </select>
+                                        <button class="btn-dashboard" style="background-color: #dc3545;" onclick="deleteOrder('${order.id}')">
+                                            <i class="bi bi-trash"></i> Elimina
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    daysHtml += `
+                        <div class="day-section-moderna">
+                            <div class="day-title-moderna">
+                                <i class="bi bi-calendar-day"></i> ${day}
+                                <span class="day-badge">${dayOrders.length} prenotazioni</span>
+                            </div>
+                            ${dayOrders.length > 0 ? dayOrdersHtml : 
+                              '<p class="text-muted text-center p-4">Nessuna prenotazione per questo giorno</p>'}
+                        </div>
+                    `;
+                });
+
+                document.getElementById('daysContainer').innerHTML = daysHtml;
+
+            } catch (error) {
+                console.error('❌ Errore Firebase:', error);
+                document.getElementById('daysContainer').innerHTML = `
+                    <div class="empty-state-moderna">
+                        <i class="bi bi-exclamation-triangle" style="color: #dc3545;"></i>
+                        <h3 class="mt-3">Errore di connessione</h3>
+                        <p class="text-muted">${error.message}</p>
+                        <button class="btn btn-danger mt-3" onclick="loadOrders()">Riprova</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Aggiorna stato
+        async function updateStatus(orderId, newStatus) {
+            try {
+                await db.collection('orders').doc(orderId).update({
+                    status: newStatus
+                });
+                showNotification('Stato aggiornato');
+                loadOrders();
+            } catch (error) {
+                console.error('Errore aggiornamento:', error);
+                alert('Errore nell\'aggiornamento');
+            }
+        }
+
+        // Elimina ordine
+        async function deleteOrder(orderId) {
+            if (confirm('Sei sicuro di voler eliminare questa prenotazione?')) {
+                try {
+                    await db.collection('orders').doc(orderId).delete();
+                    showNotification('Prenotazione eliminata');
+                    loadOrders();
+                } catch (error) {
+                    console.error('Errore eliminazione:', error);
+                    alert('Errore nell\'eliminazione');
+                }
+            }
+        }
+
+        function toggleOrder(orderId) {
+            const element = document.getElementById(`order-${orderId}`);
+            if (element) {
+                element.classList.toggle('show');
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.position = 'fixed';
+            notification.style.bottom = '80px';
+            notification.style.left = '50%';
+            notification.style.transform = 'translateX(-50%)';
+            notification.style.backgroundColor = '#28a745';
+            notification.style.color = 'white';
+            notification.style.padding = '10px 20px';
+            notification.style.borderRadius = '30px';
+            notification.style.zIndex = '9999';
+            notification.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+            notification.style.fontWeight = 'bold';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2000);
+        }
+
+        function toggleExportMenu() {
+            const menu = document.getElementById('exportMenu');
+            exportMenuVisible = !exportMenuVisible;
+            menu.classList.toggle('show', exportMenuVisible);
+        }
+
+        function exportToJSON() {
+            if (allOrders.length === 0) {
+                alert('Nessun ordine da esportare');
+                toggleExportMenu();
+                return;
+            }
+            
+            const dataStr = JSON.stringify(allOrders, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `ordini_sagra_${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            toggleExportMenu();
+            showNotification('Ordini esportati in JSON');
+        }
+
+        function exportToPDF() {
+            if (allOrders.length === 0) {
+                alert('Nessun ordine da esportare');
+                toggleExportMenu();
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+            
+            doc.setFontSize(22);
+            doc.setTextColor(219, 39, 15);
+            doc.text('Sagra dello Strozzaprete', 20, 20);
+            
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Report Ordini', 20, 30);
+            doc.text(`Data esportazione: ${new Date().toLocaleDateString()}`, 20, 38);
+            
+            const totalOrders = allOrders.length;
+            const totalCustomers = allOrders.reduce((sum, order) => sum + (order.customers || 1), 0);
+            const totalRevenue = allOrders.reduce((sum, order) => sum + (order.total || 0), 0);
+            
+            doc.setFontSize(12);
+            doc.text(`Totale prenotazioni: ${totalOrders}`, 20, 48);
+            doc.text(`Totale coperti: ${totalCustomers}`, 20, 55);
+            doc.text(`Incasso totale: € ${totalRevenue.toFixed(2)}`, 20, 62);
+            
+            const days = ['10 Agosto', '11 Agosto', '12 Agosto', '13 Agosto', 
+                         '14 Agosto', '15 Agosto', '16 Agosto', '17 Agosto'];
+            
+            let yPos = 75;
+            
+            days.forEach(day => {
+                const dayOrders = allOrders.filter(o => o.day === day);
+                
+                if (dayOrders.length > 0) {
+                    doc.setFontSize(14);
+                    doc.setTextColor(219, 39, 15);
+                    doc.text(`${day} - ${dayOrders.length} prenotazioni`, 20, yPos);
+                    yPos += 8;
+                    
+                    const tableData = [];
+                    dayOrders.forEach(order => {
+                        tableData.push([
+                            order.customer?.name || 'N/D',
+                            order.time || 'N/D',
+                            (order.customers || 1).toString(),
+                            `€ ${(order.total || 0).toFixed(2)}`,
+                            order.paymentMethod || 'N/D',
+                            order.status || 'N/D'
+                        ]);
+                    });
+                    
+                    doc.autoTable({
+                        startY: yPos,
+                        head: [['Cliente', 'Ora', 'Coperti', 'Totale', 'Pagamento', 'Stato']],
+                        body: tableData,
+                        theme: 'striped',
+                        headStyles: { fillColor: [219, 39, 15] },
+                        styles: { fontSize: 8 }
+                    });
+                    
+                    yPos = doc.lastAutoTable.finalY + 15;
+                }
+            });
+            
+            doc.save(`ordini_sagra_${new Date().toISOString().split('T')[0]}.pdf`);
+            
+            toggleExportMenu();
+            showNotification('Ordini esportati in PDF');
+        }
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animazioni
+            document.querySelectorAll('.fade-in').forEach(el => {
+                setTimeout(() => el.classList.add('visible'), 100);
+            });
+        });
+
+        // Click fuori dal menu esportazione
+        document.addEventListener('click', function(event) {
+            const exportMenu = document.getElementById('exportMenu');
+            const exportBtn = document.querySelector('.btn-floating[onclick="toggleExportMenu()"]');
+            
+            if (exportMenuVisible && 
+                !exportMenu.contains(event.target) && 
+                !exportBtn.contains(event.target)) {
+                exportMenu.classList.remove('show');
+                exportMenuVisible = false;
+            }
+        });
+    </script>
+</body>
+</html>
